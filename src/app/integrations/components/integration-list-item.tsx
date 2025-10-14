@@ -11,11 +11,6 @@ import Image from "next/image";
 import { useIntegrationApp } from "@integration-app/react";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "sonner";
-import { startSync } from "@/lib/integration-api";
-import useSWR from "swr";
-import { KnowledgeStatus } from "@/models/knowledge";
-import { SyncStatusRouteSuccessResponse } from "@/app/api/integrations/[id]/sync-status/types";
-import { SyncStatusRouteErrorResponse } from "@/app/api/integrations/[id]/sync-status/types";
 import { cn } from "@/lib/utils";
 
 interface IntegrationListItemProps {
@@ -32,71 +27,8 @@ export function IntegrationListItem({
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
-  const [syncStatus, setSyncStatus] =
-    useState<SyncStatusRouteSuccessResponse | null>(null);
 
-  const isSyncing = syncStatus?.status === KnowledgeStatus.in_progress;
-
-  const { mutate: mutateSyncStatus } = useSWR<
-    SyncStatusRouteSuccessResponse,
-    SyncStatusRouteErrorResponse
-  >(
-    integration.connection?.id
-      ? `/api/integrations/${integration.connection.id}/sync-status`
-      : null,
-    async (url) => {
-      const response = await fetch(url, { headers: getAuthHeaders() });
-      if (!response.ok) throw new Error("Failed to fetch sync status");
-      return response.json();
-    },
-    {
-      refreshInterval: isSyncing ? 2000 : 0,
-      onSuccess: (data) => {
-        setSyncStatus(data);
-      },
-      onError: () => {
-        setSyncStatus(null);
-      },
-    }
-  );
-
-  const handleStartSync = async ({
-    connectionId,
-  }: {
-    connectionId: string;
-  }) => {
-    setSyncStatus({
-      status: KnowledgeStatus.in_progress,
-      error: null,
-      startedAt: new Date(),
-      completedAt: null,
-    });
-
-    try {
-      await startSync(connectionId, {
-        key: integration.key,
-        name: integration.name,
-        logoUri: integration.logoUri,
-      });
-
-      mutateSyncStatus();
-    } catch (error) {
-      setSyncStatus({
-        status: KnowledgeStatus.failed,
-        error: error instanceof Error ? error.message : "Unknown error",
-        startedAt: new Date(),
-        completedAt: new Date(),
-      });
-
-      mutateSyncStatus();
-
-      toast.error("Failed to sync documents", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  };
-
-  const handleConnect = async ({ syncAfterConnect = true }: { syncAfterConnect: boolean }) => {
+  const handleConnect = async () => {
     try {
       setIsConnecting(true);
 
@@ -109,12 +41,6 @@ export function IntegrationListItem({
       }
 
       setIsConnecting(false);
-
-      if (
-        syncAfterConnect
-      ) {
-        handleStartSync({ connectionId: connection.id });
-      }
 
     } catch (error) {
       setIsConnecting(false);
@@ -139,8 +65,6 @@ export function IntegrationListItem({
 
       await integrationApp.connection(integration.connection.id).archive();
 
-      await mutateSyncStatus();
-
       await onRefresh();
     } catch (error) {
       toast.error("Failed to disconnect", {
@@ -158,7 +82,6 @@ export function IntegrationListItem({
     <>
       {isPickerOpen && (
         <DocumentPicker
-          isSyncing={isSyncing}
           integration={integration}
           onComplete={() => {
             setIsPickerOpen(false);
@@ -167,8 +90,6 @@ export function IntegrationListItem({
           onClose={() => setIsPickerOpen(false)}
           open={isPickerOpen}
           onOpenChange={setIsPickerOpen}
-          handleStartSync={handleStartSync}
-          syncError={syncStatus?.error || null}
         />
       )}
 
@@ -199,13 +120,6 @@ export function IntegrationListItem({
                 Disconnected
               </p>
             )}
-
-            {isSyncing && (
-              <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                <Icons.spinner className="h-3 w-3 animate-spin" />
-                <span>Syncing...</span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -223,7 +137,7 @@ export function IntegrationListItem({
               {isDisconnected ? (
                 <Button
                   variant="ghost"
-                  onClick={() => handleConnect({ syncAfterConnect: false })}
+                  onClick={() => handleConnect()}
                   size="sm"
                   disabled={isConnecting}
                 >
@@ -244,7 +158,7 @@ export function IntegrationListItem({
             </>
           ) : (
             <Button
-              onClick={() => handleConnect({ syncAfterConnect: true })}
+              onClick={() => handleConnect()}
               variant="default"
               size="sm"
               disabled={isConnecting}
