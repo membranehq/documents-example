@@ -24,6 +24,7 @@ import {
   useIntegrationDocuments,
   IntegrationDocument,
 } from "../hooks/useIntegrationDocuments";
+import { useIntegrationSearch } from "../hooks/useIntegrationSearch";
 
 interface BreadcrumbItem {
   id: string;
@@ -45,7 +46,6 @@ export function DocumentPicker({
   open,
   onOpenChange,
 }: DocumentPickerProps) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [localDocuments, setLocalDocuments] = useState<IntegrationDocument[]>(
     []
   );
@@ -53,6 +53,7 @@ export function DocumentPicker({
   const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(
     new Set()
   );
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     documents,
@@ -65,28 +66,57 @@ export function DocumentPicker({
     clearCache,
   } = useIntegrationDocuments(integration.connection?.id);
 
+  const {
+    searchResults,
+    searchLoading,
+    searchHasMore,
+    searchDocuments,
+    loadMoreSearch,
+    clearSearch,
+    error: searchError,
+  } = useIntegrationSearch(integration.connection?.id);
+
   // Sync documents for optimistic updates
   useEffect(() => {
     setLocalDocuments(documents);
   }, [documents]);
 
-  // Filter and separate documents
-  const filteredDocs = searchQuery
-    ? localDocuments.filter((doc) =>
-      doc.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : localDocuments;
+  // Trigger search when query changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        searchDocuments(searchQuery);
+      } else {
+        clearSearch();
+      }
+    }, 300); // Debounce for 300ms
 
-  const folders = filteredDocs.filter((doc) => doc.canHaveChildren);
-  const files = filteredDocs.filter((doc) => !doc.canHaveChildren);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, searchDocuments]); // clearSearch is stable and doesn't need to be in deps
+
+  // Use search results when searching, otherwise use regular documents
+  const displayDocs = searchQuery.trim() ? searchResults : localDocuments;
+  const isLoading = searchQuery.trim() ? searchLoading : loading;
+  const hasMoreItems = searchQuery.trim() ? searchHasMore : hasMore;
+  const currentError = searchQuery.trim() ? searchError : error;
+
+  const folders = displayDocs.filter((doc) => doc.canHaveChildren);
+  const files = displayDocs.filter((doc) => !doc.canHaveChildren);
 
   const navigateToFolder = (folderId: string, folderTitle: string) => {
+    // Clear search when navigating
+    clearSearch();
+    setSearchQuery("");
     setBreadcrumbs((prev) => [...prev, { id: folderId, title: folderTitle }]);
     setLocalDocuments([]); // Clear documents to show loading state
     fetchDocuments(folderId);
   };
 
   const navigateToBreadcrumb = (index: number) => {
+    // Clear search when navigating
+    clearSearch();
+    setSearchQuery("");
     setLocalDocuments([]); // Clear documents to show loading state
     if (index === -1) {
       setBreadcrumbs([]);
@@ -115,6 +145,9 @@ export function DocumentPicker({
   };
 
   const handleRefresh = () => {
+    // Clear search when refreshing
+    clearSearch();
+    setSearchQuery("");
     setLocalDocuments([]); // Clear documents to show loading state
     clearCache();
     setBreadcrumbs([]);
@@ -150,19 +183,26 @@ export function DocumentPicker({
           </div>
 
           <div className="flex justify-between items-center gap-4">
-            <Input
-              placeholder="Search documents..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
+            <div className="relative flex-1">
+              <Input
+                placeholder="Search documents..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-10"
+              />
+              {searchLoading && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader2Icon className="h-4 w-4 animate-spin text-gray-400" />
+                </div>
+              )}
+            </div>
           </div>
         </DialogHeader>
 
         <div className="min-h-[400px] max-h-[400px] overflow-y-auto my-6">
           <div className="space-y-4">
-            {/* Show breadcrumbs only when not at root */}
-            {breadcrumbs.length > 0 && (
+            {/* Show breadcrumbs only when not at root and not searching */}
+            {breadcrumbs.length > 0 && !searchQuery.trim() && (
               <div className="flex items-center flex-wrap gap-2 px-4 py-2 text-sm text-gray-500 bg-gray-50 rounded-md">
                 <button
                   onClick={() => navigateToBreadcrumb(-1)}
@@ -188,8 +228,8 @@ export function DocumentPicker({
               </div>
             )}
 
-            {localDocuments.length === 0 ? (
-              loading ? (
+            {displayDocs.length === 0 ? (
+              isLoading ? (
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   {integration.logoUri ? (
                     <Image
@@ -208,13 +248,17 @@ export function DocumentPicker({
                     <div className="h-full w-2/5 bg-black rounded-full animate-[loading_1.5s_ease-in-out_infinite]" />
                   </div>
                   <p className="text-sm text-gray-500 mt-4">
-                    Loading documents...
+                    {searchQuery.trim() ? "Searching..." : "Loading documents..."}
                   </p>
                 </div>
-              ) : error ? (
+              ) : currentError ? (
                 <ErrorState
-                  message={error}
-                  onRetry={() => fetchDocuments(currentParentId)}
+                  message={currentError}
+                  onRetry={() =>
+                    searchQuery.trim()
+                      ? searchDocuments(searchQuery)
+                      : fetchDocuments(currentParentId)
+                  }
                 />
               ) : null
             ) : (
@@ -276,15 +320,19 @@ export function DocumentPicker({
                       </div>
                     ))}
 
-                    {hasMore && (
+                    {hasMoreItems && (
                       <div className="flex justify-center pt-4">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={loadMore}
-                          disabled={loading}
+                          onClick={
+                            searchQuery.trim()
+                              ? () => loadMoreSearch(searchQuery)
+                              : loadMore
+                          }
+                          disabled={isLoading}
                         >
-                          {loading ? (
+                          {isLoading ? (
                             <>
                               <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />
                               Loading more...
