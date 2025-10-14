@@ -17,6 +17,7 @@ import {
   Loader2Icon,
   ChevronRightIcon,
   FolderIcon,
+  ExternalLinkIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { ErrorState } from "./error-state";
@@ -188,6 +189,11 @@ export function DocumentPicker({
                 placeholder="Search documents..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.trim()) {
+                    searchDocuments(searchQuery);
+                  }
+                }}
                 className="pr-10"
               />
               {searchLoading && (
@@ -260,7 +266,13 @@ export function DocumentPicker({
                       : fetchDocuments(currentParentId)
                   }
                 />
-              ) : null
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <p className="text-gray-500">
+                    {searchQuery.trim() ? "No results found" : "No items found"}
+                  </p>
+                </div>
+              )
             ) : (
               <div className="space-y-2">
                 {folders.length === 0 && files.length === 0 ? (
@@ -292,6 +304,18 @@ export function DocumentPicker({
                             {folder.title}
                           </span>
                         </div>
+                        {folder.resourceURI && (
+                          <a
+                            href={folder.resourceURI}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex-shrink-0"
+                            title="Open in new tab"
+                          >
+                            <ExternalLinkIcon className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                          </a>
+                        )}
                         <ChevronRightIcon className="h-4 w-4 text-gray-400" />
                       </div>
                     ))}
@@ -317,6 +341,18 @@ export function DocumentPicker({
                             {file.title}
                           </span>
                         </div>
+                        {file.resourceURI && (
+                          <a
+                            href={file.resourceURI}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex-shrink-0"
+                            title="Open in new tab"
+                          >
+                            <ExternalLinkIcon className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                          </a>
+                        )}
                       </div>
                     ))}
 
