@@ -80,8 +80,6 @@ export function IntegrationListItem({
     }
 
     try {
-      setIsPickerOpen(false);
-
       const response = await fetch(
         `/api/integrations/${integration.connection.id}/sync`,
         {
@@ -94,17 +92,22 @@ export function IntegrationListItem({
             integrationId: integration.id,
             integrationName: integration.name,
             integrationLogo: integration.logoUri,
-            documentIds: selectedDocumentIds.length > 0 ? selectedDocumentIds : undefined,
+            documentIds:
+              selectedDocumentIds.length > 0 ? selectedDocumentIds : undefined,
           }),
         }
       );
+
+      setIsPickerOpen(false);
 
       if (!response.ok) {
         throw new Error("Failed to sync documents");
       }
 
       toast.success("Sync started", {
-        description: `Syncing ${selectedDocumentIds.length > 0 ? selectedDocumentIds.length : 'all'} documents`,
+        description: `Syncing ${
+          selectedDocumentIds.length > 0 ? selectedDocumentIds.length : "all"
+        } documents`,
       });
 
       await onRefresh();

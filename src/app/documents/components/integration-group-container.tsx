@@ -46,7 +46,7 @@ export function IntegrationGroupContainer({
 }: IntegrationGroupContainerProps) {
   const [isMinimized, setIsMinimized] = useState(true); // Start minimized by default
 
-  const { data: documentsData, isLoading, error: documentsError } = useSWR<DocumentsAPIResponse>(
+  const { data: documentsData, isLoading, error: documentsError, mutate } = useSWR<DocumentsAPIResponse>(
     !isMinimized ? `/api/integrations/${connectionId}/documents` : null, // Only fetch when expanded
     fetcher,
     {
@@ -61,6 +61,11 @@ export function IntegrationGroupContainer({
       },
     }
   );
+
+  const handleDocumentsDeleted = () => {
+    // Refresh the documents list after deletion
+    mutate();
+  };
 
 
 
@@ -104,6 +109,7 @@ export function IntegrationGroupContainer({
       isLoading={isLoading}
       error={documentsError}
       hasFetchedDocuments={!!documentsData}
+      onDocumentsDeleted={handleDocumentsDeleted}
     />
   );
 }

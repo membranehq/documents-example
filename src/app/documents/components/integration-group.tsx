@@ -5,6 +5,10 @@ import { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useDocumentNavigation } from "@/app/integrations/hooks/use-document-navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { getAuthHeaders } from "@/app/auth-provider";
+import { toast } from "sonner";
+import { useState } from "react";
 import Image from "next/image";
 
 interface IntegrationGroupProps {
@@ -19,6 +23,7 @@ interface IntegrationGroupProps {
   isLoading?: boolean;
   error?: Error | null;
   hasFetchedDocuments?: boolean;
+  onDocumentsDeleted?: () => void;
 }
 
 export function IntegrationGroup({
@@ -32,7 +37,10 @@ export function IntegrationGroup({
   isLoading = false,
   error = null,
   hasFetchedDocuments = false,
+  onDocumentsDeleted,
 }: IntegrationGroupProps) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     currentFolders: folders,
@@ -41,6 +49,34 @@ export function IntegrationGroup({
     navigateToFolder,
     navigateToBreadcrumb,
   } = useDocumentNavigation(documents);
+
+  const handleDeleteAllDocuments = async () => {
+    try {
+      setIsDeleting(true);
+
+      const response = await fetch(`/api/integrations/${connectionId}/sync`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete documents");
+      }
+
+      toast.success("All documents deleted successfully", {
+        description: `Deleted all documents from ${integrationName}`,
+      });
+
+      setIsDeleteDialogOpen(false);
+      onDocumentsDeleted?.();
+    } catch (error) {
+      toast.error("Failed to delete documents", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const renderBreadcrumbs = () => {
     return (
@@ -108,6 +144,17 @@ export function IntegrationGroup({
               )}
             </div>
           </div>
+          {hasFetchedDocuments && documents.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              title="Delete all documents"
+            >
+              <Icons.trash className="h-3 w-3" />
+            </Button>
+          )}
           {isTruncated && (
             <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md">
               <Icons.alertCircle className="h-4 w-4" />
@@ -171,6 +218,53 @@ export function IntegrationGroup({
           )}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Icons.alertCircle className="h-5 w-5 text-red-600" />
+              Delete All Documents
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-gray-600">
+              Are you sure you want to delete all documents from{" "}
+              <span className="font-semibold">{integrationName}</span>? This action cannot be undone.
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              This will delete {documents.length} document{documents.length !== 1 ? 's' : ''} and all associated files.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteAllDocuments}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Icons.spinner className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Icons.trash className="h-4 w-4 mr-2" />
+                  Delete All
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
