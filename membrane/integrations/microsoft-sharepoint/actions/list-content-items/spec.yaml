@@ -1,0 +1,178 @@
+id: 67e3ec860ce1dc0abbd0c62e
+name: List Content Items
+uuid: b599ebcf-ddf1-4364-a13b-e2f04005e87c
+key: list-content-items
+state: READY
+errors: []
+revision: 8e0080f2-dc03-4f5d-ac9a-1e7ae31e68b5
+createdAt: '2025-03-26T12:01:10.736Z'
+updatedAt: '2025-10-15T14:41:25.343Z'
+archivedAt: null
+isDeactivated: false
+integrationId: 67c828f6de5d122142c73017
+parentId: 67e3ec5fe1bedcd237b0dae8
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    parentId:
+      type: string
+    recursive:
+      type: boolean
+type: list-data-records
+config:
+  dataSource:
+    key: content-items
+  fieldMapping:
+    key: content-items
+  parameters:
+    recursive:
+      $var: $.input.recursive
+  filter:
+    globalFolderId:
+      $var: $.input.parentId
+  unifiedFilter:
+    ownerId: ''
+  cursor:
+    $var: $.input.cursor
+isCustomized: true
+outputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+defaultOutputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+integration:
+  id: 67c828f6de5d122142c73017
+  name: Microsoft Sharepoint
+  uuid: a17d9b88-e569-44ae-93bd-2bd5d320ed8d
+  key: microsoft-sharepoint
+  state: READY
+  errors: []
+  createdAt: '2025-03-05T10:35:34.895Z'
+  updatedAt: '2025-10-12T19:26:33.362Z'
+  isDeactivated: false
+  logoUri: >-
+    https://static.integration.app/connectors/microsoft-sharepoint/asset-04614e30-1a09-4212-a954-aedc9c9fe2b1.png
+  connectorId: 68ebf5fc91617a7c207efe71
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 2
+  hasData: true
+  dataCollectionsCount: 9
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: 3aac6a28-0e52-42ea-b21a-0354768f6750
+  authType: oauth2

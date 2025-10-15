@@ -1,0 +1,142 @@
+id: 68ee7b841233428e98163dd0
+name: Search Content Items
+uuid: df6125e2-ead9-41cc-b6b2-4e280962c3de
+key: search-content-items
+state: READY
+errors: []
+revision: c4cfa023-1638-4f2c-9498-51a0e1c4f197
+createdAt: '2025-10-14T16:34:12.753Z'
+updatedAt: '2025-10-14T16:57:48.118Z'
+isDeactivated: false
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    query:
+      type: string
+type: search-data-record
+config:
+  dataSource:
+    key: content-items
+  fieldMapping:
+    key: content-items
+  query:
+    $var: $.input.query
+  cursor:
+    $var: $.input.cursor
+isCustomized: true
+outputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+defaultOutputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean

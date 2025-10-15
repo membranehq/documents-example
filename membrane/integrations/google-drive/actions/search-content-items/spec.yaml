@@ -1,0 +1,168 @@
+id: 68ee7c646ce0c9cc4b233891
+name: Search Content Items
+uuid: df6125e2-ead9-41cc-b6b2-4e280962c3de
+key: search-content-items
+state: READY
+errors: []
+revision: 49ae07c2-19f9-4947-ae38-ab44f63271ea
+createdAt: '2025-10-14T16:37:56.817Z'
+updatedAt: '2025-10-14T16:57:52.154Z'
+isDeactivated: false
+integrationId: 67974ac4d59680b518ef328e
+parentId: 68ee7b841233428e98163dd0
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    query:
+      type: string
+type: search-data-record
+config:
+  dataSource:
+    key: content-items
+  fieldMapping:
+    key: content-items
+  query:
+    $var: $.input.query
+  cursor:
+    $var: $.input.cursor
+isCustomized: true
+outputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+defaultOutputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+integration:
+  id: 67974ac4d59680b518ef328e
+  name: Google Drive
+  uuid: 272b82c8-0690-4ff2-8f5b-00685cef8d5d
+  key: google-drive
+  state: READY
+  errors: []
+  createdAt: '2025-01-27T08:58:44.490Z'
+  updatedAt: '2025-10-13T14:30:44.671Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/gdrive/logo.png
+  connectorId: 68ed0be7b6be3907a7dbc8bc
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 51
+  hasData: true
+  dataCollectionsCount: 3
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: a7d76105-5a82-4cd2-be0e-d459f71a9bfa
+  authType: oauth2

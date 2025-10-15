@@ -1,0 +1,18 @@
+name: Download File
+inputSchema:
+  type: object
+  properties:
+    fileId:
+      type: string
+  required:
+    - fileId
+outputSchema:
+  type: object
+  properties:
+    downloadUri:
+      type: string
+  required:
+    - downloadUri
+methods:
+  run:
+    implementationType: javascript

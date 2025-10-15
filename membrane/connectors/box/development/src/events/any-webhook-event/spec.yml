@@ -1,0 +1,6 @@
+name: Any Webhook Event
+implementationType: global-webhook
+key: any-webhook-event
+methods:
+  get-event-selector:
+    implementationType: javascript

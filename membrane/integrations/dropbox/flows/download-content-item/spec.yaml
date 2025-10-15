@@ -1,0 +1,80 @@
+id: 67e3ec9be1bedcd237b0e00c
+name: Download Content Item
+uuid: 5cabe1bf-3ae1-45ff-9b96-94b64c0e28fb
+key: download-content-item
+state: READY
+errors: []
+revision: 5d486464-311f-4f2f-b905-de13d20cd8d7
+createdAt: '2025-03-26T12:01:31.465Z'
+updatedAt: '2025-03-26T12:01:31.465Z'
+isDeactivated: false
+integrationId: 67c85894e972856101c42a67
+universalFlowId: 67e3ec62e1bedcd237b0db0b
+nodes:
+  api-trigger:
+    type: api-trigger
+    name: API Trigger
+    config:
+      inputSchema:
+        type: object
+        properties:
+          documentId:
+            type: string
+    links:
+      - key: download-file-or-markdown
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: API Request to Your App
+    config:
+      request:
+        uri: /api/webhooks/on-download-complete
+        method: POST
+        body:
+          documentId:
+            $var: $.input.api-trigger.documentId
+          text:
+            $var: $.input.download-file-or-markdown.content
+          connectionId:
+            $var: $.connection.id
+          downloadURI:
+            $var: $.input.download-file-or-markdown.downloadURI
+    links: []
+  download-file-or-markdown:
+    type: run-action
+    name: Download file or markdown
+    config:
+      action:
+        key: download-content-item
+      input:
+        id:
+          $var: $.input.api-trigger.documentId
+    links:
+      - key: api-request-to-your-app
+autoCreateInstances: false
+isCustomized: false
+universalFlowRevision: d6d9ea4b-00b9-4570-b05d-a592aaa9cd07
+integration:
+  id: 67c85894e972856101c42a67
+  name: Dropbox
+  uuid: e9fac5d2-6751-4886-b242-fd9c38a8f8b0
+  key: dropbox
+  state: READY
+  errors: []
+  createdAt: '2025-03-05T13:58:44.562Z'
+  updatedAt: '2025-03-05T13:59:11.187Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/dropbox/logo.png
+  connectorId: 643eac8bbadd839bce5b1114
+  connectorVersion: 2.2.0
+  hasMissingParameters: false
+  hasDocumentation: false
+  hasOperations: true
+  operationsCount: 137
+  hasData: true
+  dataCollectionsCount: 1
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: 8fefbe47-1ebc-4208-abb1-2498f4bf573b
+  authType: oauth2

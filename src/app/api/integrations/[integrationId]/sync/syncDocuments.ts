@@ -91,17 +91,22 @@ export const inngest_syncDocuments = inngest.createFunction(
 
     const integrationApp = new IntegrationAppClient({ token });
 
-    // If specific document IDs are provided, fetch them individually
-    if (documentIds && documentIds.length > 0) {
-      logger.info(`Fetching ${documentIds.length} specific documents`);
+    // Fetch specific documents and their children
+    if (!documentIds || documentIds.length === 0) {
+      throw new NonRetriableError("No document IDs provided for sync");
+    }
+    logger.info(`Fetching ${documentIds.length} specific documents`);
 
-      const documentsToSync: Array<
-        Exclude<Document, "connectionId" | "content" | "userId">
-      > = [];
+    const documentsToSync: Array<
+      Exclude<Document, "connectionId" | "content" | "userId">
+    > = [];
 
-      // Fetch each document by ID
-      for (const documentId of documentIds) {
-        const doc = await step.run(`fetch-document-${documentId}`, async () => {
+    // Fetch each document and its children
+    for (const documentId of documentIds) {
+      // First, fetch the root document
+      const rootDoc = await step.run(
+        `fetch-root-document-${documentId}`,
+        async () => {
           try {
             const fetchPromise = integrationApp
               .connection(connectionId)
@@ -118,7 +123,7 @@ export const inngest_syncDocuments = inngest.createFunction(
             return await withTimeout(
               fetchPromise,
               FETCH_PAGE_TIMEOUT,
-              `Fetching document ${documentId} timed out after ${
+              `Fetching root document ${documentId} timed out after ${
                 FETCH_PAGE_TIMEOUT / 1000
               } seconds, please try again`
             );
@@ -130,170 +135,95 @@ export const inngest_syncDocuments = inngest.createFunction(
             }
             throw error;
           }
-        });
+        }
+      );
 
-        const documentFields = doc.output.fields;
-        documentsToSync.push(documentFields);
+      // Add the root document to the list
+      const rootDocumentFields = rootDoc.output.fields;
+      documentsToSync.push(rootDocumentFields);
 
-        // If document can have children, fetch them
-        if (documentFields.canHaveChildren) {
-          logger.info(`Fetching children for document ${documentId}`);
-          let cursor: string | undefined;
+      // Only fetch children if the document can have children
+      if (rootDocumentFields.canHaveChildren) {
+        logger.info(`Fetching children for document ${documentId}`);
+        let cursor: string | undefined;
 
-          while (true) {
-            const childrenResult = await step.run(
-              `fetch-children-${documentId}-${cursor || "initial"}`,
-              async () => {
-                try {
-                  const fetchPromise = integrationApp
-                    .connection(connectionId)
-                    .action("list-content-items")
-                    .run({
-                      parentId: documentId,
-                      cursor,
-                    }) as Promise<DocumentsResponse>;
+        while (true) {
+          const result = await step.run(
+            `fetch-children-${documentId}-${cursor || "initial"}`,
+            async () => {
+              try {
+                const fetchPromise = integrationApp
+                  .connection(connectionId)
+                  .action("list-content-items")
+                  .run({
+                    parentId: documentId,
+                    recursive: true,
+                    cursor,
+                  }) as Promise<DocumentsResponse>;
 
-                  return await withTimeout(
-                    fetchPromise,
-                    FETCH_PAGE_TIMEOUT,
-                    `Fetching children for ${documentId} timed out after ${
-                      FETCH_PAGE_TIMEOUT / 1000
-                    } seconds, please try again`
+                return await withTimeout(
+                  fetchPromise,
+                  FETCH_PAGE_TIMEOUT,
+                  `Fetching children for ${documentId} timed out after ${
+                    FETCH_PAGE_TIMEOUT / 1000
+                  } seconds, please try again`
+                );
+              } catch (error) {
+                if (isConnectionNotFoundError(error, connectionId)) {
+                  throw new NonRetriableError(
+                    `Connection "${connectionId}" was archived during sync process`
                   );
-                } catch (error) {
-                  if (isConnectionNotFoundError(error, connectionId)) {
-                    throw new NonRetriableError(
-                      `Connection "${connectionId}" was archived during sync process`
-                    );
-                  }
-                  throw error;
                 }
+                throw error;
               }
-            );
-
-            const childRecords = childrenResult.output
-              .records as ListDocumentsActionRecord[];
-            documentsToSync.push(...childRecords.map((r) => r.fields));
-
-            cursor = childrenResult.output.cursor;
-            if (!cursor) break;
-
-            // Safety check to prevent infinite loops
-            if (documentsToSync.length >= MAX_DOCUMENTS) {
-              logger.warn(`Reached max documents limit (${MAX_DOCUMENTS})`);
-              break;
             }
-          }
-        }
-
-        // Safety check to prevent infinite loops
-        if (documentsToSync.length >= MAX_DOCUMENTS) {
-          logger.warn(`Reached max documents limit (${MAX_DOCUMENTS})`);
-          break;
-        }
-      }
-
-      // Save all fetched documents
-      if (documentsToSync.length > 0) {
-        const docsToSave = documentsToSync
-          .slice(0, MAX_DOCUMENTS)
-          .map((doc) => ({
-            ...doc,
-            connectionId,
-            content: null,
-            userId,
-          }));
-
-        await step.run(`save-selected-documents`, async () => {
-          return await DocumentModel.bulkWrite(
-            docsToSave.map((doc) => ({
-              updateOne: {
-                filter: { id: doc.id, connectionId },
-                update: { $set: doc },
-                upsert: true,
-              },
-            }))
           );
-        });
 
-        // Track all document IDs that were actually synced
-        actualSyncedDocumentIds.push(...docsToSave.map((doc) => doc.id));
-        totalDocumentsSynced = docsToSave.length;
-      }
-    } else {
-      // Original behavior: sync all documents in batches
-      let cursor: string | undefined;
+          const records = result.output.records as ListDocumentsActionRecord[];
+          documentsToSync.push(...records.map((r) => r.fields));
 
-      while (true) {
-        logger.info("Fetching documents batch");
-        const result = await step.run(`fetch-documents-batch`, async () => {
-          try {
-            const fetchPromise = integrationApp
-              .connection(connectionId)
-              .action("list-content-items")
-              .run({ cursor }) as Promise<DocumentsResponse>;
+          cursor = result.output.cursor;
+          if (!cursor) break;
 
-            return await withTimeout(
-              fetchPromise,
-              FETCH_PAGE_TIMEOUT,
-              `Fetching page timed out after ${
-                FETCH_PAGE_TIMEOUT / 1000
-              } seconds, please try again`
-            );
-          } catch (error) {
-            // Check if the error is due to connection not found
-            if (isConnectionNotFoundError(error, connectionId)) {
-              throw new NonRetriableError(
-                `Connection "${connectionId}" was archived during sync process`
-              );
-            }
-
-            throw error;
+          // Safety check to prevent infinite loops
+          if (documentsToSync.length >= MAX_DOCUMENTS) {
+            logger.warn(`Reached max documents limit (${MAX_DOCUMENTS})`);
+            break;
           }
-        });
-
-        const records = result.output.records as ListDocumentsActionRecord[];
-
-        const docsToSave = records.map((doc) => ({
-          ...doc.fields,
-          connectionId,
-          content: null,
-          userId,
-        }));
-
-        // Check if adding these documents would exceed our limit
-        if (totalDocumentsSynced + docsToSave.length > MAX_DOCUMENTS) {
-          const remainingSlots = MAX_DOCUMENTS - totalDocumentsSynced;
-          docsToSave.splice(remainingSlots);
         }
-
-        if (docsToSave.length) {
-          await step.run(`save-documents-batch`, async () => {
-            return await DocumentModel.bulkWrite(
-              docsToSave.map((doc) => ({
-                updateOne: {
-                  filter: { id: doc.id, connectionId },
-                  update: { $set: doc },
-                  upsert: true,
-                },
-              }))
-            );
-          });
-
-          // Track all document IDs that were actually synced
-          actualSyncedDocumentIds.push(...docsToSave.map((doc) => doc.id));
-          totalDocumentsSynced += docsToSave.length;
-        }
-
-        // Break if we've reached the maximum number of documents
-        if (totalDocumentsSynced >= MAX_DOCUMENTS) {
-          break;
-        }
-
-        // Only continue if there's more data to fetch
-        cursor = result.output.cursor;
-        if (!cursor) break;
       }
+
+      // Safety check to prevent infinite loops
+      if (documentsToSync.length >= MAX_DOCUMENTS) {
+        logger.warn(`Reached max documents limit (${MAX_DOCUMENTS})`);
+        break;
+      }
+    }
+
+    // Save all fetched documents
+    if (documentsToSync.length > 0) {
+      const docsToSave = documentsToSync.slice(0, MAX_DOCUMENTS).map((doc) => ({
+        ...doc,
+        connectionId,
+        content: null,
+        userId,
+      }));
+
+      await step.run(`save-selected-documents`, async () => {
+        return await DocumentModel.bulkWrite(
+          docsToSave.map((doc) => ({
+            updateOne: {
+              filter: { id: doc.id, connectionId },
+              update: { $set: doc },
+              upsert: true,
+            },
+          }))
+        );
+      });
+
+      // Track all document IDs that were actually synced
+      actualSyncedDocumentIds.push(...docsToSave.map((doc) => doc.id));
+      totalDocumentsSynced = docsToSave.length;
     }
 
     // Update final sync status

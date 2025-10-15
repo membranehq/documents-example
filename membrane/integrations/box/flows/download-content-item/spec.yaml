@@ -1,0 +1,78 @@
+id: 67e3ec9aae8ab0b618738d26
+name: Download Content Item
+uuid: 40601150-979e-4cd3-b75c-c9672016c047
+key: download-content-item
+state: READY
+errors: []
+revision: d6d9ea4b-00b9-4570-b05d-a592aaa9cd07
+createdAt: '2025-03-26T12:01:30.456Z'
+updatedAt: '2025-10-12T20:34:28.087Z'
+isDeactivated: false
+integrationId: 67b61532220905ae47e23698
+universalFlowId: 67e3ec62e1bedcd237b0db0b
+nodes:
+  api-trigger:
+    type: api-trigger
+    name: API Trigger
+    config:
+      inputSchema:
+        type: object
+        properties:
+          documentId:
+            type: string
+    links:
+      - key: download-file-or-markdown
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: API Request to Your App
+    config:
+      request:
+        uri: /api/webhooks/on-download-complete
+        method: POST
+        body:
+          documentId:
+            $var: $.input.api-trigger.documentId
+          text:
+            $var: $.input.download-file-or-markdown.content
+          connectionId:
+            $var: $.connection.id
+          downloadURI:
+            $var: $.input.download-file-or-markdown.downloadURI
+    links: []
+  download-file-or-markdown:
+    type: run-action
+    name: Download file or markdown
+    config:
+      action:
+        key: download-content-item
+      input:
+        id:
+          $var: $.input.api-trigger.documentId
+    links:
+      - key: api-request-to-your-app
+autoCreateInstances: false
+isCustomized: false
+universalFlowRevision: d6d9ea4b-00b9-4570-b05d-a592aaa9cd07
+integration:
+  id: 67b61532220905ae47e23698
+  name: Box
+  uuid: fcdd88e0-5946-45fe-bb1b-191cac262bdf
+  key: box
+  state: READY
+  errors: []
+  createdAt: '2025-02-19T17:30:26.819Z'
+  updatedAt: '2025-10-13T19:09:00.058Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/box/logo.png
+  connectorId: 68ec10e7646a657be4cc9543
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 264
+  hasData: true
+  dataCollectionsCount: 6
+  hasEvents: true
+  eventsCount: 1
+  hasGlobalWebhooks: true
+  hasUdm: true
+  authType: oauth2

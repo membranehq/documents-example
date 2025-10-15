@@ -90,10 +90,15 @@ export function useIntegrationDocuments(
       const cacheKey = getCacheKey(parentId);
 
       try {
-        const params: { cursor?: string; parentId?: string | null } = {};
+        const params: {
+          cursor?: string;
+          parentId?: string | null;
+          recursive?: boolean;
+        } = {};
 
         // Always pass parentId to the action
         params.parentId = parentId;
+        params.recursive = false;
 
         // Use ref to get cursor without causing re-render
         const cache = documentCacheRef.current.get(cacheKey);

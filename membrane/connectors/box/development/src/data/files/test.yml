@@ -1,0 +1,8 @@
+methods:
+  update:
+    mockRecordFields:
+      shared_link:
+        download_count: null
+        is_password_enabled: false
+        permissions:
+          can_download: true

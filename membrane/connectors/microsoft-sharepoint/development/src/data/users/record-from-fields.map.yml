@@ -1,0 +1,8 @@
+id:
+  $var: $.fields.id
+name:
+  $var: $.fields.displayName
+createdTime:
+  $var: $.fields.createdDateTime
+deletedTime:
+  $var: $.fields.deletedDateTime

@@ -1,0 +1,111 @@
+id: 67e3ec7dc5ee3b01289e4a02
+name: Content Items
+uuid: 770370c9-c1dc-4b5e-808f-cab35bb0c381
+key: content-items
+revision: 5826301b-4baf-43fd-9329-96445cead491
+createdAt: '2025-03-26T12:01:01.567Z'
+updatedAt: '2025-04-04T13:57:49.005Z'
+archivedAt: null
+isDeactivated: false
+integrationId: 67974ac4d59680b518ef328e
+universalFieldMappingId: 67e3ec616446443b8d435553
+dataSourceId: 67e3ec664d749db24a619bf3
+appSchema:
+  type: object
+  properties:
+    id:
+      type: string
+    title:
+      type: string
+    createdAt:
+      type: string
+    updatedAt:
+      type: string
+    parentId:
+      type: string
+    canHaveChildren:
+      type: boolean
+    resourceURI:
+      type: string
+    canDownload:
+      type: boolean
+direction: import
+defaultImportValue:
+  id:
+    $var: $.id
+  title:
+    $var: $.title
+  createdAt:
+    $var: $.createdTime
+  updatedAt:
+    $var: $.updatedTime
+  parentId:
+    $var: $.parentDocumentId
+  canHaveChildren:
+    $var: $.canHaveChildren
+  resourceURI:
+    $var: $.uri
+  isDownloadable:
+    $var: $.isDownloadable
+importValue:
+  id:
+    $var: $.id
+  createdAt:
+    $var: $.createdTime
+  resourceURI:
+    $var: $.webViewLink
+  title:
+    $var: $.name
+  updatedAt:
+    $var: $.modifiedTime
+  parentId:
+    $var: $.folderId
+  canHaveChildren:
+    $map:
+      value:
+        $var: $.type
+      mapping:
+        - from: file
+          to: false
+        - from: folder
+          to: true
+        - from: drive
+          to: true
+  canDownload:
+    $map:
+      value:
+        $var: $.type
+      mapping:
+        - from: file
+          to: true
+        - from: folder
+          to: false
+        - from: drive
+          to: false
+isCustomized: true
+universalFieldMappingRevision: 1a9d9c11-2de6-4bf2-8734-42b549303de7
+dataSourceKey: content-items
+integration:
+  id: 67974ac4d59680b518ef328e
+  name: Google Drive
+  uuid: 272b82c8-0690-4ff2-8f5b-00685cef8d5d
+  key: google-drive
+  state: READY
+  errors: []
+  createdAt: '2025-01-27T08:58:44.490Z'
+  updatedAt: '2025-10-13T14:30:44.671Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/gdrive/logo.png
+  connectorId: 68ed0be7b6be3907a7dbc8bc
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 51
+  hasData: true
+  dataCollectionsCount: 3
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: a7d76105-5a82-4cd2-be0e-d459f71a9bfa
+  authType: oauth2

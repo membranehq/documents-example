@@ -1,0 +1,14 @@
+id:
+  $var: fields.id
+name:
+  $var: fields.name
+uri:
+  $var: fields.webUrl
+createdTime:
+  $var: fields.createdDateTime
+updatedTime:
+  $var: fields.lastModifiedDateTime
+createdById:
+  $var: fields.createdBy.user.id
+updatedById:
+  $var: fields.lastModifiedBy.user.id

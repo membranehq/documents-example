@@ -1,0 +1,12 @@
+id:
+  $var: $.fields.itemId
+name:
+  $var: $.fields.name
+createdTime:
+  $var: $.fields.created_at
+updatedTime:
+  $var: $.fields.modified_at
+createdById:
+  $var: $.fields.created_by.id
+updatedById:
+  $var: $.fields.modified_by.id

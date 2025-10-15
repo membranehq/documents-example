@@ -1,0 +1,130 @@
+id: 67e41457c5ee3b0128a2d146
+name: Receive Content Item Events
+uuid: bf5a082b-17a6-4494-bae5-2bfe386a8d75
+key: receive-content-item-events
+state: READY
+errors: []
+revision: ced26147-071b-4004-9214-fe2a2c246f41
+createdAt: '2025-03-26T14:51:03.469Z'
+updatedAt: '2025-10-14T11:08:42.359Z'
+isDeactivated: false
+integrationId: 67974ac4d59680b518ef328e
+universalFlowId: 67e414264539c5ecbdd02ec2
+nodes:
+  find-record-by-id:
+    type: find-data-record-by-id
+    name: Find record-by-id
+    config:
+      dataSource:
+        key: content-items
+      id:
+        $var: $.input.content-item-created-trigger.record.id
+      fieldMapping:
+        key: content-items
+    links:
+      - key: send-created-event-to-my-app
+  find-data-record-by-id:
+    type: find-data-record-by-id
+    name: Find Data Record By Id
+    config:
+      dataSource:
+        key: content-items
+      id:
+        $var: $.input.content-item-updated-trigger.record.id
+      fieldMapping:
+        key: content-items
+    links:
+      - key: send-updated-request-to-your-app
+  send-created-event-to-my-app:
+    type: api-request-to-your-app
+    name: Send created Event to My App
+    config:
+      request:
+        uri: /api/webhooks/on-create
+        method: POST
+        body:
+          fields:
+            $var: $.input.find-record-by-id.fields
+          connectionId:
+            $var: $.connection.id
+    links: []
+  send-deleted-event-to-my-app:
+    type: api-request-to-your-app
+    name: Send deleted event to My App
+    config:
+      request:
+        method: POST
+        body:
+          id:
+            $var: $.input.content-item-deleted-trigger.record.id
+        uri: /api/webhooks/on-delete
+    links: []
+  send-updated-request-to-your-app:
+    type: api-request-to-your-app
+    name: Send Updated request to your app
+    config:
+      request:
+        uri: /api/webhooks/on-update
+        method: POST
+        body:
+          connectionId:
+            $var: $.connection.id
+          fields:
+            $var: $.input.find-data-record-by-id.fields
+    links: []
+  content-item-created-trigger:
+    type: data-record-created-trigger
+    name: Content Item Created Trigger
+    config:
+      dataSource:
+        key: content-items
+      fieldMapping:
+        key: content-items
+    links:
+      - key: find-record-by-id
+  content-item-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Content Item Deleted Trigger
+    config:
+      dataSource:
+        key: content-items
+      fieldMapping: {}
+    links:
+      - key: send-deleted-event-to-my-app
+  content-item-updated-trigger:
+    type: data-record-updated-trigger
+    name: Content Item Updated Trigger
+    config:
+      dataSource:
+        key: content-items
+      fieldMapping:
+        key: content-items
+    links:
+      - key: find-data-record-by-id
+autoCreateInstances: true
+isCustomized: false
+universalFlowRevision: ced26147-071b-4004-9214-fe2a2c246f41
+integration:
+  id: 67974ac4d59680b518ef328e
+  name: Google Drive
+  uuid: 272b82c8-0690-4ff2-8f5b-00685cef8d5d
+  key: google-drive
+  state: READY
+  errors: []
+  createdAt: '2025-01-27T08:58:44.490Z'
+  updatedAt: '2025-10-13T14:30:44.671Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/gdrive/logo.png
+  connectorId: 68ed0be7b6be3907a7dbc8bc
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 51
+  hasData: true
+  dataCollectionsCount: 3
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: a7d76105-5a82-4cd2-be0e-d459f71a9bfa
+  authType: oauth2

@@ -1,0 +1,169 @@
+id: 68ee7c65fb2796e3597ad896
+name: Search Content Items
+uuid: df6125e2-ead9-41cc-b6b2-4e280962c3de
+key: search-content-items
+state: READY
+errors: []
+revision: c4cfa023-1638-4f2c-9498-51a0e1c4f197
+createdAt: '2025-10-14T16:37:57.125Z'
+updatedAt: '2025-10-14T16:57:48.687Z'
+isDeactivated: false
+integrationId: 67c828f6de5d122142c73017
+parentId: 68ee7b841233428e98163dd0
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    query:
+      type: string
+type: search-data-record
+config:
+  dataSource:
+    key: content-items
+  fieldMapping:
+    key: content-items
+  query:
+    $var: $.input.query
+  cursor:
+    $var: $.input.cursor
+isCustomized: false
+outputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+defaultOutputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          uri:
+            type: string
+            format: url
+          createdTime:
+            type: string
+            format: datetime
+          updatedTime:
+            type: string
+            format: datetime
+          deletedTime:
+            type: string
+            format: datetime
+          createdById:
+            type: string
+          updatedById:
+            type: string
+          fields:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: string
+              title:
+                title: Title
+                type: string
+              createdAt:
+                title: Created At
+                type: string
+              updatedAt:
+                title: Updated At
+                type: string
+              parentId:
+                title: Parent Id
+                type: string
+              canHaveChildren:
+                title: Can Have Children
+                type: boolean
+              resourceURI:
+                title: Resource Uri
+                type: string
+              canDownload:
+                title: Can Download
+                type: boolean
+integration:
+  id: 67c828f6de5d122142c73017
+  name: Microsoft Sharepoint
+  uuid: a17d9b88-e569-44ae-93bd-2bd5d320ed8d
+  key: microsoft-sharepoint
+  state: READY
+  errors: []
+  createdAt: '2025-03-05T10:35:34.895Z'
+  updatedAt: '2025-10-12T19:26:33.362Z'
+  isDeactivated: false
+  logoUri: >-
+    https://static.integration.app/connectors/microsoft-sharepoint/asset-04614e30-1a09-4212-a954-aedc9c9fe2b1.png
+  connectorId: 68ebf5fc91617a7c207efe71
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 2
+  hasData: true
+  dataCollectionsCount: 9
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: 3aac6a28-0e52-42ea-b21a-0354768f6750
+  authType: oauth2

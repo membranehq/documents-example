@@ -1,0 +1,24 @@
+id: 67c828f6de5d122142c73017
+name: Microsoft Sharepoint
+uuid: a17d9b88-e569-44ae-93bd-2bd5d320ed8d
+key: microsoft-sharepoint
+state: READY
+errors: []
+createdAt: '2025-03-05T10:35:34.895Z'
+updatedAt: '2025-10-12T19:26:33.362Z'
+isDeactivated: false
+logoUri: >-
+  https://static.integration.app/connectors/microsoft-sharepoint/asset-04614e30-1a09-4212-a954-aedc9c9fe2b1.png
+connectorId: 68ebf5fc91617a7c207efe71
+hasMissingParameters: false
+hasDocumentation: true
+hasOperations: true
+operationsCount: 2
+hasData: true
+dataCollectionsCount: 9
+hasEvents: false
+eventsCount: 0
+hasGlobalWebhooks: false
+hasUdm: true
+appUuid: 3aac6a28-0e52-42ea-b21a-0354768f6750
+authType: oauth2

@@ -1,0 +1,102 @@
+id: 67e3ec7ba77e96adf25396b3
+name: Content Items
+uuid: 5ad5b3b4-6108-4b8c-9185-753e992a27c6
+key: content-items
+revision: a9dc8a2b-d550-49af-9320-14882a17a4f1
+createdAt: '2025-03-26T12:00:59.310Z'
+updatedAt: '2025-03-26T14:02:18.158Z'
+archivedAt: null
+isDeactivated: false
+integrationId: 67b61532220905ae47e23698
+universalFieldMappingId: 67e3ec616446443b8d435553
+dataSourceId: 67e3ec6417681d248899a0b5
+appSchema:
+  type: object
+  properties:
+    id:
+      type: string
+    title:
+      type: string
+    createdAt:
+      type: string
+    updatedAt:
+      type: string
+    parentId:
+      type: string
+    canHaveChildren:
+      type: boolean
+    resourceURI:
+      type: string
+direction: import
+defaultImportValue:
+  id:
+    $var: $.id
+  title:
+    $var: $.title
+  createdAt:
+    $var: $.createdTime
+  updatedAt:
+    $var: $.updatedTime
+  parentId:
+    $var: $.parentDocumentId
+  canHaveChildren:
+    $var: $.canHaveChildren
+  resourceURI:
+    $var: $.uri
+importValue:
+  id:
+    $var: $.id
+  title:
+    $var: $.name
+  createdAt:
+    $var: $.content_created_at
+  updatedAt:
+    $var: $.content_modified_at
+  parentId:
+    $var: $.folder_id
+  canHaveChildren:
+    $map:
+      value:
+        $var: $.type
+      mapping:
+        - from: file
+          to: false
+        - from: folder
+          to: true
+  resourceURI:
+    $var: $.shared_link.url
+  canDownload:
+    $map:
+      value:
+        $var: $.type
+      mapping:
+        - from: file
+          to: true
+        - from: folder
+          to: false
+isCustomized: true
+universalFieldMappingRevision: 1a9d9c11-2de6-4bf2-8734-42b549303de7
+dataSourceKey: content-items
+integration:
+  id: 67b61532220905ae47e23698
+  name: Box
+  uuid: fcdd88e0-5946-45fe-bb1b-191cac262bdf
+  key: box
+  state: READY
+  errors: []
+  createdAt: '2025-02-19T17:30:26.819Z'
+  updatedAt: '2025-10-13T19:09:00.058Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/box/logo.png
+  connectorId: 68ec10e7646a657be4cc9543
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 264
+  hasData: true
+  dataCollectionsCount: 6
+  hasEvents: true
+  eventsCount: 1
+  hasGlobalWebhooks: true
+  hasUdm: true
+  authType: oauth2

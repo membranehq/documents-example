@@ -1,0 +1,79 @@
+id: 67e3ec9b6446443b8d435bbe
+name: Download Content Item
+uuid: 9988c109-ec37-479b-9a26-b5ae15b882ee
+key: download-content-item
+state: READY
+errors: []
+revision: d6d9ea4b-00b9-4570-b05d-a592aaa9cd07
+createdAt: '2025-03-26T12:01:31.842Z'
+updatedAt: '2025-10-13T07:15:53.226Z'
+isDeactivated: false
+integrationId: 67974ac4d59680b518ef328e
+universalFlowId: 67e3ec62e1bedcd237b0db0b
+nodes:
+  api-trigger:
+    type: api-trigger
+    name: API Trigger
+    config:
+      inputSchema:
+        type: object
+        properties:
+          documentId:
+            type: string
+    links:
+      - key: download-file-or-markdown
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: API Request to Your App
+    config:
+      request:
+        uri: /api/webhooks/on-download-complete
+        method: POST
+        body:
+          documentId:
+            $var: $.input.api-trigger.documentId
+          text:
+            $var: $.input.download-file-or-markdown.content
+          connectionId:
+            $var: $.connection.id
+          downloadURI:
+            $var: $.input.download-file-or-markdown.downloadURI
+    links: []
+  download-file-or-markdown:
+    type: run-action
+    name: Download file or markdown
+    config:
+      action:
+        key: download-content-item
+      input:
+        id:
+          $var: $.input.api-trigger.documentId
+    links:
+      - key: api-request-to-your-app
+autoCreateInstances: false
+isCustomized: false
+universalFlowRevision: d6d9ea4b-00b9-4570-b05d-a592aaa9cd07
+integration:
+  id: 67974ac4d59680b518ef328e
+  name: Google Drive
+  uuid: 272b82c8-0690-4ff2-8f5b-00685cef8d5d
+  key: google-drive
+  state: READY
+  errors: []
+  createdAt: '2025-01-27T08:58:44.490Z'
+  updatedAt: '2025-10-13T14:30:44.671Z'
+  isDeactivated: false
+  logoUri: https://static.integration.app/connectors/gdrive/logo.png
+  connectorId: 68ed0be7b6be3907a7dbc8bc
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  operationsCount: 51
+  hasData: true
+  dataCollectionsCount: 3
+  hasEvents: false
+  eventsCount: 0
+  hasGlobalWebhooks: false
+  hasUdm: true
+  appUuid: a7d76105-5a82-4cd2-be0e-d459f71a9bfa
+  authType: oauth2
