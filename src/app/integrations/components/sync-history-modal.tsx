@@ -114,29 +114,17 @@ export function SyncHistoryModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <Icons.history className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="font-semibold">Sync History</div>
-                <div className="text-sm font-normal text-gray-600">{integrationName}</div>
-              </div>
-            </DialogTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchSyncHistory}
-              disabled={loading}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
-          </div>
+          <DialogTitle className="flex items-center gap-3 text-xl">
+            <div className="p-2 bg-blue-50 rounded-lg">
+              <Icons.history className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="font-semibold">Sync History</div>
+              <div className="text-sm font-normal text-gray-600">{integrationName}</div>
+            </div>
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 overflow-auto">

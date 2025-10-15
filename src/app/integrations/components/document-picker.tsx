@@ -13,7 +13,6 @@ import { Integration } from "@integration-app/sdk";
 import { Input } from "@/components/ui/input";
 import {
   FileIcon,
-  RefreshCcwIcon,
   Loader2Icon,
   ChevronRightIcon,
   FolderIcon,
@@ -64,7 +63,6 @@ export function DocumentPicker({
     loadMore,
     fetchDocuments,
     currentParentId,
-    clearCache,
   } = useIntegrationDocuments(integration.connection?.id);
 
   const {
@@ -145,42 +143,25 @@ export function DocumentPicker({
     });
   };
 
-  const handleRefresh = () => {
-    // Clear search when refreshing
-    clearSearch();
-    setSearchQuery("");
-    setLocalDocuments([]); // Clear documents to show loading state
-    clearCache();
-    setBreadcrumbs([]);
-    fetchDocuments(null);
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-3">
-              {integration.logoUri ? (
-                <Image
-                  width={32}
-                  height={32}
-                  src={integration.logoUri}
-                  alt={`${integration.name} logo`}
-                  className="w-8 h-8 rounded-lg"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                  {integration.name[0]}
-                </div>
-              )}
-              <DialogTitle>{integration.name}</DialogTitle>
-            </div>
-
-            <Button variant="outline" size="sm" onClick={handleRefresh}>
-              <RefreshCcwIcon className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
+          <div className="flex items-center gap-3 mb-4">
+            {integration.logoUri ? (
+              <Image
+                width={32}
+                height={32}
+                src={integration.logoUri}
+                alt={`${integration.name} logo`}
+                className="w-8 h-8 rounded-lg"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                {integration.name[0]}
+              </div>
+            )}
+            <DialogTitle>{integration.name}</DialogTitle>
           </div>
 
           <div className="flex justify-between items-center gap-4">
@@ -224,7 +205,7 @@ export function DocumentPicker({
                       className={cn(
                         "hover:text-gray-900 transition-colors",
                         index === breadcrumbs.length - 1 &&
-                        "font-medium text-gray-900"
+                          "font-medium text-gray-900"
                       )}
                     >
                       {crumb.title}
@@ -254,7 +235,9 @@ export function DocumentPicker({
                     <div className="h-full w-2/5 bg-black rounded-full animate-[loading_1.5s_ease-in-out_infinite]" />
                   </div>
                   <p className="text-sm text-gray-500 mt-4">
-                    {searchQuery.trim() ? "Searching..." : "Loading documents..."}
+                    {searchQuery.trim()
+                      ? "Searching..."
+                      : "Loading documents..."}
                   </p>
                 </div>
               ) : currentError ? (
@@ -388,7 +371,8 @@ export function DocumentPicker({
 
         <DialogFooter className="!flex !flex-row !items-center !justify-between">
           <div className="text-sm text-gray-600">
-            {selectedDocuments.size} {selectedDocuments.size === 1 ? 'document' : 'documents'} selected
+            {selectedDocuments.size}{" "}
+            {selectedDocuments.size === 1 ? "document" : "documents"} selected
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
