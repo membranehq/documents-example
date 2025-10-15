@@ -64,43 +64,42 @@ export async function POST(request: NextRequest) {
     });
 
     if (!existingDoc) {
-      let isSubscribed = false;
+      let shouldTrack = false;
 
       if (fields.parentId) {
-        const parentHasSubscription = await findParentSubscription(
-          fields.parentId
-        );
+        const parentExists = await findParentSubscription(fields.parentId);
 
-        isSubscribed = parentHasSubscription;
+        shouldTrack = parentExists;
       }
 
       const isFile = !fields.canHaveChildren;
 
-      const shouldDownload = isFile && isSubscribed;
+      const shouldDownload = isFile && shouldTrack;
 
       /**
-       * If some parent document is subscribed, we need to add isSubscribed to this document
+       * If some parent document exists in our system, we track this new document too
        * and kick off the download flow if it's a file
        */
-      await DocumentModel.bulkWrite([
-        {
-          insertOne: {
-            document: {
-              ...fields,
-              isSubscribed: isSubscribed,
-              userId,
-              connectionId,
+      if (shouldTrack) {
+        await DocumentModel.bulkWrite([
+          {
+            insertOne: {
+              document: {
+                ...fields,
+                userId,
+                connectionId,
+              },
             },
           },
-        },
-      ]);
+        ]);
 
-      if (shouldDownload) {
-        await triggerDownloadDocumentFlow(
-          request.headers.get("x-integration-app-token")!,
-          connectionId,
-          fields.id
-        );
+        if (shouldDownload) {
+          await triggerDownloadDocumentFlow(
+            request.headers.get("x-integration-app-token")!,
+            connectionId,
+            fields.id
+          );
+        }
       }
     } else {
       console.log(`Document with id ${fields.id} already exists`);

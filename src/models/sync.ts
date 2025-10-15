@@ -1,30 +1,31 @@
 import { Schema, model, models } from "mongoose";
-import { Document } from "./document";
 
-export const KnowledgeStatus = {
+export const SyncStatus = {
   in_progress: "in_progress",
   completed: "completed",
   failed: "failed",
 } as const;
 
-export type KnowledgeStatus =
-  (typeof KnowledgeStatus)[keyof typeof KnowledgeStatus];
+export type SyncStatus = (typeof SyncStatus)[keyof typeof SyncStatus];
 
-export interface Knowledge {
+export interface Sync {
   userId: string;
   connectionId: string;
   integrationId: string;
   integrationName: string;
   integrationLogo?: string;
-  documents: Document[];
-  syncStatus?: KnowledgeStatus;
+  syncStatus?: SyncStatus;
   syncStartedAt?: Date;
   syncCompletedAt?: Date;
   syncError?: string;
   isTruncated?: boolean;
+  documentIds?: string[]; // Initially selected document IDs
+  actualSyncedDocumentIds?: string[]; // All document IDs that were actually synced
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const knowledgeSchema = new Schema<Knowledge>(
+const syncSchema = new Schema<Sync>(
   {
     userId: {
       type: String,
@@ -33,7 +34,6 @@ const knowledgeSchema = new Schema<Knowledge>(
     connectionId: {
       type: String,
       required: true,
-      unique: true,
     },
     integrationId: {
       type: String,
@@ -46,7 +46,7 @@ const knowledgeSchema = new Schema<Knowledge>(
     integrationLogo: String,
     syncStatus: {
       type: String,
-      enum: Object.values(KnowledgeStatus),
+      enum: Object.values(SyncStatus),
     },
     syncStartedAt: Date,
     syncCompletedAt: Date,
@@ -55,17 +55,22 @@ const knowledgeSchema = new Schema<Knowledge>(
       type: Boolean,
       default: false,
     },
+    documentIds: [String], // Initially selected document IDs
+    actualSyncedDocumentIds: [String], // All document IDs that were actually synced
   },
   {
     timestamps: true,
   }
 );
 
-knowledgeSchema.index({ userId: 1, connectionId: 1 }, { unique: true });
+// Index for querying syncs by user and connection
+syncSchema.index({ userId: 1, connectionId: 1 });
+// Index for querying latest syncs
+syncSchema.index({ connectionId: 1, createdAt: -1 });
 
 // Recreate model if it exists
-if (models?.Knowledge) {
-  delete models.Knowledge;
+if (models?.Sync) {
+  delete models.Sync;
 }
 
-export const KnowledgeModel = model<Knowledge>("Knowledge", knowledgeSchema);
+export const SyncModel = model<Sync>("Sync", syncSchema);

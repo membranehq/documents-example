@@ -1,10 +1,11 @@
-import { KnowledgeStatus } from "@/models/knowledge";
+import { SyncStatus } from "@/models/sync";
 
 export type SyncStatusRouteSuccessResponse = {
-  status: KnowledgeStatus | null;
+  status: SyncStatus | null;
   error: string | null;
   startedAt: Date | null;
   completedAt: Date | null;
+  isTruncated: boolean;
 };
 
 export type SyncStatusRouteErrorResponse = {

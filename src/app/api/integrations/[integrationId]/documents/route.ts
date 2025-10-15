@@ -1,32 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { DocumentModel } from "@/models/document";
-import { KnowledgeModel } from "@/models/knowledge";
+import { getAuthFromRequest } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ integrationId: string }> }
 ) {
   try {
-    const connectionId = (await params).id;
+    const connectionId = (await params).integrationId;
+    const { customerId: userId } = getAuthFromRequest(request);
 
-    if (!connectionId) {
+    if (!connectionId || !userId) {
       return NextResponse.json({ documents: [] });
     }
 
     await connectDB();
 
-    const documents = await DocumentModel.find({ connectionId }).lean();
-
-    const knowledge = await KnowledgeModel.findOne({
-      connectionId
-    })
+    const documents = await DocumentModel.find({
+      userId,
+      connectionId,
+    }).lean();
 
     return NextResponse.json({
       documents,
-      isTruncated: knowledge?.isTruncated || false
     });
   } catch (error) {
     console.error("Failed to fetch documents:", error);

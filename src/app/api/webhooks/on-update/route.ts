@@ -46,7 +46,8 @@ export async function POST(request: Request) {
 
     const isFile = !fields.canHaveChildren;
 
-    const shouldDownload = isFile && doc.isSubscribed;
+    // If document exists in our DB and it's a file, we should download it
+    const shouldDownload = isFile;
 
     await doc.updateOne({
       $set: {

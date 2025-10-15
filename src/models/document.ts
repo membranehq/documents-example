@@ -13,7 +13,6 @@ export interface Document {
   parentId: string | null;
   connectionId: string;
   userId: string;
-  isSubscribed: boolean;
   content?: string;
   lastSyncedAt: string;
   storageKey?: string;
@@ -45,10 +44,6 @@ const documentSchema = new Schema<DocumentWithConnection>({
   },
   connectionId: String,
   userId: String,
-  isSubscribed: {
-    type: Boolean,
-    default: false,
-  },
   content: {
     type: String,
     default: null,

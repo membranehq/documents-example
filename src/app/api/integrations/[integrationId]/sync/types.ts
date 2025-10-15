@@ -1,11 +1,11 @@
-import { KnowledgeStatus } from "@/models/knowledge";
+import { SyncStatus } from "@/models/sync";
 
 export interface SyncRouteSuccessResponse {
-  status: KnowledgeStatus;
+  status: SyncStatus;
 }
 
 export interface SyncRouteErrorResponse {
-  status: KnowledgeStatus;
+  status: SyncStatus;
   message: string;
 }
 
@@ -14,9 +14,11 @@ export type SyncRouteResponse =
   | SyncRouteErrorResponse;
 
 export interface SyncEventData {
+  syncId: string;
   connectionId: string;
   userId: string;
   token: string;
+  documentIds?: string[];
   integrationId?: string;
   integrationName?: string;
   integrationLogo?: string;
@@ -26,4 +28,5 @@ export interface SyncRequestBody {
   integrationId: string;
   integrationName: string;
   integrationLogo?: string;
+  documentIds?: string[];
 }

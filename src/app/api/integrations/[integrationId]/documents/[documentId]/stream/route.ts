@@ -6,7 +6,7 @@ import { getS3ObjectStream } from "@/lib/s3-utils";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ integrationId: string; documentId: string }> }
 ) {
   try {
     const auth = getAuthFromRequest(request);
@@ -21,7 +21,7 @@ export async function GET(
       return new NextResponse("Storage key is required", { status: 400 });
     }
 
-    const documentId = (await params).id;
+    const { documentId } = await params;
 
     await connectDB();
 

@@ -3,8 +3,9 @@
 import { Integration } from "@integration-app/sdk";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { FolderOpen } from "lucide-react";
 import { DocumentPicker } from "@/app/integrations/components/document-picker";
+import { SyncHistoryModal } from "@/app/integrations/components/sync-history-modal";
 import { getAuthHeaders } from "@/app/auth-provider";
 import Image from "next/image";
 import { useIntegrationApp } from "@integration-app/react";
@@ -23,6 +24,7 @@ export function IntegrationListItem({
 }: IntegrationListItemProps) {
   const integrationApp = useIntegrationApp();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
@@ -55,7 +57,7 @@ export function IntegrationListItem({
 
     try {
       setIsDisconnecting(true);
-      await fetch(`/api/integrations/${integration.connection.id}/knowledge`, {
+      await fetch(`/api/integrations/${integration.connection.id}/sync`, {
         method: "DELETE",
         headers: getAuthHeaders(),
       });
@@ -73,9 +75,44 @@ export function IntegrationListItem({
   };
 
   const handleSync = async (selectedDocumentIds: string[]) => {
-    setIsPickerOpen(false);
-    // TODO: Handle syncing selected documents
-    console.log('Selected document IDs:', selectedDocumentIds);
+    if (!integration.connection?.id) {
+      return;
+    }
+
+    try {
+      setIsPickerOpen(false);
+
+      const response = await fetch(
+        `/api/integrations/${integration.connection.id}/sync`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders(),
+          },
+          body: JSON.stringify({
+            integrationId: integration.id,
+            integrationName: integration.name,
+            integrationLogo: integration.logoUri,
+            documentIds: selectedDocumentIds.length > 0 ? selectedDocumentIds : undefined,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to sync documents");
+      }
+
+      toast.success("Sync started", {
+        description: `Syncing ${selectedDocumentIds.length > 0 ? selectedDocumentIds.length : 'all'} documents`,
+      });
+
+      await onRefresh();
+    } catch (error) {
+      toast.error("Failed to sync", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
   };
 
   const isDisconnected = integration.connection?.disconnected;
@@ -91,6 +128,13 @@ export function IntegrationListItem({
           onOpenChange={setIsPickerOpen}
         />
       )}
+
+      <SyncHistoryModal
+        integrationId={integration.connection?.id || ""}
+        integrationName={integration.name}
+        open={isHistoryOpen}
+        onOpenChange={setIsHistoryOpen}
+      />
 
       <div
         className={cn(
@@ -126,10 +170,19 @@ export function IntegrationListItem({
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setIsHistoryOpen(true)}
+                disabled={!integration.connection?.id}
+              >
+                <Icons.history className="w-4 h-4 mr-2" />
+                History
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setIsPickerOpen(true)}
               >
-                <Settings className="w-4 h-4 mr-2" />
-                Configure
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Select Files
               </Button>
               {isDisconnected ? (
                 <Button

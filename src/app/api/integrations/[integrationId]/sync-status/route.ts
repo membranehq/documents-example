@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import { KnowledgeModel } from "@/models/knowledge";
+import { SyncModel } from "@/models/sync";
 import {
   SyncStatusRouteSuccessResponse,
   SyncStatusRouteErrorResponse,
@@ -8,28 +8,32 @@ import {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ integrationId: string }> }
 ): Promise<
   NextResponse<SyncStatusRouteSuccessResponse | SyncStatusRouteErrorResponse>
 > {
   try {
-    const connectionId = (await params).id;
+    const connectionId = (await params).integrationId;
     await connectDB();
 
-    const knowledge = await KnowledgeModel.findOne({ connectionId }).lean();
+    // Get the latest sync for this connection
+    const sync = await SyncModel.findOne({ connectionId })
+      .sort({ createdAt: -1 })
+      .lean();
 
-    if (!knowledge) {
+    if (!sync) {
       return NextResponse.json(
-        { error: "Knowledge does not exist", code: "404" },
+        { error: "Sync does not exist", code: "404" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
-      status: knowledge.syncStatus ?? null,
-      error: knowledge.syncError ?? null,
-      startedAt: knowledge.syncStartedAt ?? null,
-      completedAt: knowledge.syncCompletedAt ?? null,
+      status: sync.syncStatus ?? null,
+      error: sync.syncError ?? null,
+      startedAt: sync.syncStartedAt ?? null,
+      completedAt: sync.syncCompletedAt ?? null,
+      isTruncated: sync.isTruncated ?? false,
     });
   } catch (error) {
     console.error("Failed to get sync status:", error);

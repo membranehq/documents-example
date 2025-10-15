@@ -5,7 +5,7 @@ import { getAuthFromRequest } from "@/lib/server-auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ integrationId: string; documentId: string }> }
 ) {
   try {
     const auth = getAuthFromRequest(request);
@@ -14,9 +14,9 @@ export async function GET(
     }
 
     await connectDB();
-    const id = (await params).id;
+    const { documentId } = await params;
 
-    const document = await DocumentModel.findById(id);
+    const document = await DocumentModel.findById(documentId);
 
     if (!document) {
       return NextResponse.json({ content: "" });

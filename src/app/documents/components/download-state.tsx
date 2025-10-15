@@ -1,13 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { CheckIcon, Loader2Icon, XIcon } from "lucide-react";
 import { DownloadState, DownloadStateType } from "@/types/download";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 interface DownloadStateDisplayProps {
   state: DownloadStateType;
   integrationName?: string;
 }
-
 
 export interface DownloadStateConfig {
   icon: React.ReactNode;
@@ -21,7 +25,10 @@ const Icons = {
   x: XIcon,
 } as const;
 
-export function DownloadStateDisplay({ state, integrationName }: DownloadStateDisplayProps) {
+export function DownloadStateDisplay({
+  state,
+  integrationName,
+}: DownloadStateDisplayProps) {
   if (state === DownloadState.FLOW_TRIGGERED) {
     return (
       <TooltipProvider>
@@ -35,7 +42,7 @@ export function DownloadStateDisplay({ state, integrationName }: DownloadStateDi
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <span>Download flow triggered, Waiting on download webhook</span>
+            <span>Download flow triggered, waiting on download webhook</span>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -46,7 +53,13 @@ export function DownloadStateDisplay({ state, integrationName }: DownloadStateDi
     return null;
   }
 
-  const stateConfig: Record<Extract<DownloadStateType, "DOWNLOADING_FROM_URL" | "EXTRACTING_TEXT" | "FAILED">, DownloadStateConfig> = {
+  const stateConfig: Record<
+    Extract<
+      DownloadStateType,
+      "DOWNLOADING_FROM_URL" | "EXTRACTING_TEXT" | "FAILED"
+    >,
+    DownloadStateConfig
+  > = {
     DOWNLOADING_FROM_URL: {
       icon: <Icons.spinner className="h-3 w-3 animate-spin" />,
       text: `Downloading${integrationName ? ` from ${integrationName}` : ""}`,
@@ -73,4 +86,5 @@ export function DownloadStateDisplay({ state, integrationName }: DownloadStateDi
       <span>{config.text}</span>
     </Badge>
   );
-} 
+}
+

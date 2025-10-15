@@ -30,9 +30,9 @@ export async function getAllDocsInTree(
 }
 
 /**
- * Recursively checks if any parent document in the hierarchy is subscribed
- * @param documentId - The ID of the document to start checking from
- * @returns Promise<boolean> - Returns true if any parent document is subscribed, false otherwise
+ * Checks if a parent document exists in our database
+ * @param parentDocumentId - The ID of the parent document to check
+ * @returns Promise<boolean> - Returns true if parent document exists, false otherwise
  */
 export async function findParentSubscription(
   parentDocumentId: string | null
@@ -41,23 +41,7 @@ export async function findParentSubscription(
     return false;
   }
 
-  let document = await DocumentModel.findOne({ id: parentDocumentId });
+  const document = await DocumentModel.findOne({ id: parentDocumentId });
 
-  if (!document) {
-    return false;
-  }
-
-  if (document.isSubscribed) {
-    return true;
-  }
-
-  while (document?.parentId) {
-    document = await DocumentModel.findOne({ id: document.parentId });
-
-    if (document?.isSubscribed) {
-      return true;
-    }
-  }
-
-  return false;
+  return !!document;
 }

@@ -15,8 +15,8 @@ const navigation = [
     href: "/integrations",
   },
   {
-    title: "Knowledge",
-    href: "/knowledge",
+    title: "Documents",
+    href: "/documents",
   }
 ];
 
