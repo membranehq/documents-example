@@ -34,7 +34,7 @@ interface BreadcrumbItem {
 
 interface DocumentPickerProps {
   integration: Integration;
-  onComplete: () => void;
+  onDone: (selectedDocumentIds: string[]) => void;
   onClose: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,7 +42,7 @@ interface DocumentPickerProps {
 
 export function DocumentPicker({
   integration,
-  onComplete,
+  onDone,
   onClose,
   open,
   onOpenChange,
@@ -386,18 +386,23 @@ export function DocumentPicker({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-          <Button
-            onClick={() => {
-              onComplete();
-              onOpenChange(false);
-            }}
-          >
-            Done
-          </Button>
+        <DialogFooter className="!flex !flex-row !items-center !justify-between">
+          <div className="text-sm text-gray-600">
+            {selectedDocuments.size} {selectedDocuments.size === 1 ? 'document' : 'documents'} selected
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onClose}>
+              Close
+            </Button>
+            <Button
+              onClick={() => {
+                onDone(Array.from(selectedDocuments));
+                onOpenChange(false);
+              }}
+            >
+              Sync
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

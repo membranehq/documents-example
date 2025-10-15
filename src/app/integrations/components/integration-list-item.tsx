@@ -2,7 +2,6 @@
 
 import { Integration } from "@integration-app/sdk";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { DocumentPicker } from "@/app/integrations/components/document-picker";
@@ -22,7 +21,6 @@ export function IntegrationListItem({
   integration,
   onRefresh,
 }: IntegrationListItemProps) {
-  const router = useRouter();
   const integrationApp = useIntegrationApp();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -41,7 +39,6 @@ export function IntegrationListItem({
       }
 
       setIsConnecting(false);
-
     } catch (error) {
       setIsConnecting(false);
 
@@ -75,18 +72,20 @@ export function IntegrationListItem({
     }
   };
 
-  const isDisconnected = integration.connection?.disconnected;
+  const handleSync = async (selectedDocumentIds: string[]) => {
+    setIsPickerOpen(false);
+    // TODO: Handle syncing selected documents
+    console.log('Selected document IDs:', selectedDocumentIds);
+  };
 
+  const isDisconnected = integration.connection?.disconnected;
 
   return (
     <>
       {isPickerOpen && (
         <DocumentPicker
           integration={integration}
-          onComplete={() => {
-            setIsPickerOpen(false);
-            router.push("/knowledge");
-          }}
+          onDone={handleSync}
           onClose={() => setIsPickerOpen(false)}
           open={isPickerOpen}
           onOpenChange={setIsPickerOpen}
@@ -95,7 +94,7 @@ export function IntegrationListItem({
 
       <div
         className={cn(
-          "flex items-center justify-between p-4 pl-0 bg-white rounded-lg border-b",
+          "flex items-center justify-between p-4 pl-0 bg-white rounded-lg border-b"
         )}
       >
         <div className="flex items-center gap-4">
@@ -116,9 +115,7 @@ export function IntegrationListItem({
           <div className="flex gap-2 items-center">
             <h3 className="font-medium">{integration.name}</h3>
             {isDisconnected && (
-              <p className="text-sm font-bold text-red-500 ">
-                Disconnected
-              </p>
+              <p className="text-sm font-bold text-red-500 ">Disconnected</p>
             )}
           </div>
         </div>
@@ -142,7 +139,9 @@ export function IntegrationListItem({
                   disabled={isConnecting}
                 >
                   <span className="font-bold">Reconnect</span>
-                  {isConnecting && <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />}
+                  {isConnecting && (
+                    <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />
+                  )}
                 </Button>
               ) : (
                 <Button
@@ -152,7 +151,9 @@ export function IntegrationListItem({
                   disabled={isDisconnecting}
                 >
                   <span className="text-red-500">Disconnect</span>
-                  {isDisconnecting && <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />}
+                  {isDisconnecting && (
+                    <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />
+                  )}
                 </Button>
               )}
             </>
@@ -163,7 +164,10 @@ export function IntegrationListItem({
               size="sm"
               disabled={isConnecting}
             >
-              Connect {isConnecting && <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />}
+              Connect{" "}
+              {isConnecting && (
+                <Icons.spinner className="ml-2 h-4 w-4 animate-spin" />
+              )}
             </Button>
           )}
         </div>
