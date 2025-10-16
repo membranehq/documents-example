@@ -4,9 +4,9 @@ uuid: 0cbce099-9045-4d9a-b0dd-9ec682e950f3
 key: list-content-items
 state: READY
 errors: []
-revision: 7469410f-b1ca-429b-b307-49778ac0d392
+revision: 63c03963-8da2-4ca9-869f-074017560929
 createdAt: '2025-03-26T12:01:08.494Z'
-updatedAt: '2025-10-15T14:41:53.464Z'
+updatedAt: '2025-10-15T18:21:40.137Z'
 archivedAt: null
 isDeactivated: false
 integrationId: 67b61532220905ae47e23698
@@ -19,7 +19,7 @@ inputSchema:
     parentId:
       type: string
     recursive:
-      type: string
+      type: boolean
 type: list-data-records
 config:
   dataSource:
@@ -33,6 +33,7 @@ config:
   filter:
     folder_id:
       $var: $.input.parentId
+    type: null
   cursor:
     $var: $.input.cursor
 isCustomized: true
@@ -785,11 +786,13 @@ integration:
   key: box
   state: READY
   errors: []
+  revision: 5b2d7e44-4999-417f-aba0-a37188130cce
   createdAt: '2025-02-19T17:30:26.819Z'
-  updatedAt: '2025-10-13T19:09:00.058Z'
+  updatedAt: '2025-10-16T15:00:31.870Z'
   isDeactivated: false
   logoUri: https://static.integration.app/connectors/box/logo.png
-  connectorId: 68ec10e7646a657be4cc9543
+  connectorId: 6466783c60f981f3ce6968ef
+  connectorVersion: 3.0.0
   hasMissingParameters: false
   hasDocumentation: true
   hasOperations: true

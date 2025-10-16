@@ -4,9 +4,9 @@ uuid: c49dbd3b-17f8-4895-ae77-124d42e16132
 key: find-content-item-by-id
 state: READY
 errors: []
-revision: 2b0b9139-973e-4dea-b174-23bccc13e5fa
+revision: 8daf21c1-120b-47ba-9040-7382132e83ec
 createdAt: '2025-03-26T12:01:01.918Z'
-updatedAt: '2025-10-12T19:26:33.716Z'
+updatedAt: '2025-10-15T19:43:50.938Z'
 archivedAt: null
 isDeactivated: false
 integrationId: 67c828f6de5d122142c73017
@@ -20,11 +20,12 @@ type: find-data-record-by-id
 config:
   dataSource:
     key: content-items
-  id:
-    $var: $.input.id
   fieldMapping:
     key: content-items
-isCustomized: false
+    includeRawFields: true
+  id:
+    $var: $.input.id
+isCustomized: true
 outputSchema:
   type: object
   properties:
@@ -75,6 +76,114 @@ outputSchema:
         canDownload:
           title: Can Download
           type: boolean
+    rawFields:
+      type: object
+      properties:
+        '@microsoft.graph.downloadUrl':
+          type: string
+        createdDateTime:
+          type: string
+        eTag:
+          type: string
+        id:
+          type: string
+        itemType:
+          type: string
+          enum:
+            - file
+            - folder
+            - drive
+            - site
+          readOnly: true
+        lastModifiedDateTime:
+          type: string
+        name:
+          type: string
+        content:
+          type: string
+          writeOnly: true
+        webUrl:
+          type: string
+        cTag:
+          type: string
+        size:
+          type: integer
+        folderId:
+          type: string
+          referenceCollection:
+            key: folders
+        createdBy:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                displayName:
+                  type: string
+        lastModifiedBy:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                displayName:
+                  type: string
+        parentReference:
+          type: object
+          properties:
+            driveType:
+              type: string
+            driveId:
+              type: string
+            id:
+              type: string
+            name:
+              type: string
+            path:
+              type: string
+            siteId:
+              type: string
+        folder:
+          type: object
+          properties:
+            childCount:
+              type: integer
+        file:
+          type: object
+          properties:
+            mimeType:
+              type: string
+            hashes:
+              type: object
+              properties:
+                quickXorHash:
+                  type: string
+        fileSystemInfo:
+          type: object
+          properties:
+            createdDateTime:
+              type: string
+            lastModifiedDateTime:
+              type: string
+        shared:
+          type: object
+          properties:
+            scope:
+              type: string
+        globalId:
+          description: Record Id with the encoded drive id, site id, and item id
+          type: string
+        globalFolderId:
+          description: Folder id with encoded drive id, site id, item id
+          type: string
 defaultOutputSchema:
   type: object
   properties:
@@ -125,6 +234,114 @@ defaultOutputSchema:
         canDownload:
           title: Can Download
           type: boolean
+    rawFields:
+      type: object
+      properties:
+        '@microsoft.graph.downloadUrl':
+          type: string
+        createdDateTime:
+          type: string
+        eTag:
+          type: string
+        id:
+          type: string
+        itemType:
+          type: string
+          enum:
+            - file
+            - folder
+            - drive
+            - site
+          readOnly: true
+        lastModifiedDateTime:
+          type: string
+        name:
+          type: string
+        content:
+          type: string
+          writeOnly: true
+        webUrl:
+          type: string
+        cTag:
+          type: string
+        size:
+          type: integer
+        folderId:
+          type: string
+          referenceCollection:
+            key: folders
+        createdBy:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                displayName:
+                  type: string
+        lastModifiedBy:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                displayName:
+                  type: string
+        parentReference:
+          type: object
+          properties:
+            driveType:
+              type: string
+            driveId:
+              type: string
+            id:
+              type: string
+            name:
+              type: string
+            path:
+              type: string
+            siteId:
+              type: string
+        folder:
+          type: object
+          properties:
+            childCount:
+              type: integer
+        file:
+          type: object
+          properties:
+            mimeType:
+              type: string
+            hashes:
+              type: object
+              properties:
+                quickXorHash:
+                  type: string
+        fileSystemInfo:
+          type: object
+          properties:
+            createdDateTime:
+              type: string
+            lastModifiedDateTime:
+              type: string
+        shared:
+          type: object
+          properties:
+            scope:
+              type: string
+        globalId:
+          description: Record Id with the encoded drive id, site id, and item id
+          type: string
+        globalFolderId:
+          description: Folder id with encoded drive id, site id, item id
+          type: string
 integration:
   id: 67c828f6de5d122142c73017
   name: Microsoft Sharepoint
@@ -132,12 +349,14 @@ integration:
   key: microsoft-sharepoint
   state: READY
   errors: []
+  revision: c71c2526-4287-4cd0-915d-425e80172129
   createdAt: '2025-03-05T10:35:34.895Z'
-  updatedAt: '2025-10-12T19:26:33.362Z'
+  updatedAt: '2025-10-16T15:00:46.699Z'
   isDeactivated: false
   logoUri: >-
     https://static.integration.app/connectors/microsoft-sharepoint/asset-04614e30-1a09-4212-a954-aedc9c9fe2b1.png
-  connectorId: 68ebf5fc91617a7c207efe71
+  connectorId: 6466784d60f981f3ce696906
+  connectorVersion: 3.0.0
   hasMissingParameters: false
   hasDocumentation: true
   hasOperations: true

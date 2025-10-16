@@ -2,13 +2,16 @@ id: 67e3ec7e4d749db24a619dad
 name: Content Items
 uuid: 4540997a-0bb9-4d95-834c-2dded8c3a5e7
 key: content-items
-revision: 189fdde7-6c46-4b8c-8479-7a35337907d0
+state: READY
+errors: []
+revision: 2a6cff29-227d-40ca-b985-6870d6f052a1
 createdAt: '2025-03-26T12:01:02.156Z'
-updatedAt: '2025-03-26T14:06:22.048Z'
+updatedAt: '2025-10-16T14:42:06.241Z'
 archivedAt: null
 isDeactivated: false
 integrationId: 67c828f6de5d122142c73017
 universalFieldMappingId: 67e3ec616446443b8d435553
+dataSourceKey: content-items
 dataSourceId: 67e3ec670ce1dc0abbd0c3f7
 appSchema:
   type: object
@@ -49,7 +52,7 @@ defaultImportValue:
     $var: $.isDownloadable
 importValue:
   id:
-    $var: $.globalId
+    $var: $.id
   title:
     $var: $.name
   createdAt:
@@ -88,7 +91,6 @@ importValue:
           to: false
 isCustomized: true
 universalFieldMappingRevision: 1a9d9c11-2de6-4bf2-8734-42b549303de7
-dataSourceKey: content-items
 integration:
   id: 67c828f6de5d122142c73017
   name: Microsoft Sharepoint
@@ -96,12 +98,14 @@ integration:
   key: microsoft-sharepoint
   state: READY
   errors: []
+  revision: c71c2526-4287-4cd0-915d-425e80172129
   createdAt: '2025-03-05T10:35:34.895Z'
-  updatedAt: '2025-10-12T19:26:33.362Z'
+  updatedAt: '2025-10-16T15:00:46.699Z'
   isDeactivated: false
   logoUri: >-
     https://static.integration.app/connectors/microsoft-sharepoint/asset-04614e30-1a09-4212-a954-aedc9c9fe2b1.png
-  connectorId: 68ebf5fc91617a7c207efe71
+  connectorId: 6466784d60f981f3ce696906
+  connectorVersion: 3.0.0
   hasMissingParameters: false
   hasDocumentation: true
   hasOperations: true
