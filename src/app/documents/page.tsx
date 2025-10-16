@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FileTextIcon, Plus } from "lucide-react";
 import { useIntegrations } from "@integration-app/react";
+import { SyncNotifications } from "@/components/sync-notifications";
 
 function LoadingSkeleton() {
   return (
@@ -92,6 +93,8 @@ export default function DocumentsPage() {
           />
         ))}
       </div>
+
+      <SyncNotifications />
     </div>
   );
 }

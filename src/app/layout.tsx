@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/app/providers";
 import { Header } from "@/components/header";
 import { IntegrationProvider } from "./integration-provider";
 import { AuthProvider } from "./auth-provider";
+import { SyncNotificationProvider } from "@/contexts/sync-notifications-context";
 import { Toaster } from "sonner";
 import { Instrument_Sans } from "next/font/google";
 import type { Metadata } from "next";
@@ -37,10 +38,12 @@ export default function RootLayout({
         >
           <AuthProvider>
             <IntegrationProvider>
-              <Header />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                {children}
-              </main>
+              <SyncNotificationProvider>
+                <Header />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  {children}
+                </main>
+              </SyncNotificationProvider>
             </IntegrationProvider>
           </AuthProvider>
         </ThemeProvider>

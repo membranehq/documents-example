@@ -12,6 +12,8 @@ import { useIntegrationApp } from "@integration-app/react";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useSyncNotifications } from "@/contexts/sync-notifications-context";
 
 interface IntegrationListItemProps {
   integration: Integration;
@@ -23,6 +25,8 @@ export function IntegrationListItem({
   onRefresh,
 }: IntegrationListItemProps) {
   const integrationApp = useIntegrationApp();
+  const router = useRouter();
+  const { triggerRefresh } = useSyncNotifications();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -105,12 +109,17 @@ export function IntegrationListItem({
       }
 
       toast.success("Sync started", {
-        description: `Syncing ${
-          selectedDocumentIds.length > 0 ? selectedDocumentIds.length : "all"
-        } documents`,
+        description: `Syncing ${selectedDocumentIds.length > 0 ? selectedDocumentIds.length : "all"
+          } documents`,
       });
 
+      // Trigger sync notifications to refresh
+      triggerRefresh();
+
       await onRefresh();
+
+      // Redirect to documents page after successful sync
+      router.push("/documents");
     } catch (error) {
       toast.error("Failed to sync", {
         description: error instanceof Error ? error.message : "Unknown error",

@@ -205,7 +205,7 @@ export function DocumentPicker({
                       className={cn(
                         "hover:text-gray-900 transition-colors",
                         index === breadcrumbs.length - 1 &&
-                          "font-medium text-gray-900"
+                        "font-medium text-gray-900"
                       )}
                     >
                       {crumb.title}
@@ -378,14 +378,16 @@ export function DocumentPicker({
             <Button variant="outline" onClick={onClose}>
               Close
             </Button>
-            <Button
-              onClick={() => {
-                onDone(Array.from(selectedDocuments));
-                onOpenChange(false);
-              }}
-            >
-              Sync
-            </Button>
+            {selectedDocuments.size > 0 && (
+              <Button
+                onClick={() => {
+                  onDone(Array.from(selectedDocuments));
+                  onOpenChange(false);
+                }}
+              >
+                Sync
+              </Button>
+            )}
           </div>
         </DialogFooter>
       </DialogContent>
