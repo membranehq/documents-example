@@ -178,10 +178,10 @@ export function SyncNotifications() {
                       alt={sync.integrationName}
                       width={36}
                       height={36}
-                      className="h-9 w-9 object-contain rounded"
+                      className="h-9 w-9 object-contain rounded-xl"
                     />
                   ) : (
-                    <div className="h-9 w-9 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <div className="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-gray-400" />
                     </div>
                   )}
@@ -241,10 +241,10 @@ export function SyncNotifications() {
                       alt={sync.integrationName}
                       width={32}
                       height={32}
-                      className="h-8 w-8 object-contain rounded"
+                      className="h-8 w-8 object-contain rounded-xl"
                     />
                   ) : (
-                    <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-xl bg-gray-100 flex items-center justify-center">
                       <FileText className="h-4 w-4 text-gray-400" />
                     </div>
                   )}

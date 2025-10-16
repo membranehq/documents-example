@@ -46,7 +46,7 @@ export function ErrorState({
           <Button
             onClick={onRetry}
             variant="outline"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-lg px-8 py-3 hover:to-red-200 transition-all duration-300"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-8 py-3 hover:to-red-200 transition-all duration-300"
           >
             <Icons.refresh className="h-4 w-4 transition-transform group-hover:rotate-180 duration-500" />
             <span className="relative">Try Again</span>

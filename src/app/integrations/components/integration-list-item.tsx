@@ -150,7 +150,7 @@ export function IntegrationListItem({
 
       <div
         className={cn(
-          "flex items-center justify-between p-4 pl-0 bg-white rounded-lg border-b"
+          "flex items-center justify-between p-4 pl-0 bg-white border-b"
         )}
       >
         <div className="flex items-center gap-4">
@@ -160,10 +160,10 @@ export function IntegrationListItem({
               height={40}
               src={integration.logoUri}
               alt={`${integration.name} logo`}
-              className="w-10 h-10 rounded-lg"
+              className="w-10 h-10 rounded-xl"
             />
           ) : (
-            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
               {integration.name[0]}
             </div>
           )}

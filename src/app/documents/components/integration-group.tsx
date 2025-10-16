@@ -103,7 +103,7 @@ export function IntegrationGroup({
   };
 
   return (
-    <div className="border rounded-lg shadow-none">
+    <div className="border rounded-2xl shadow-none">
       <div className="p-3 pb-2">
         <div className="flex items-center gap-2">
           <Button
@@ -125,10 +125,10 @@ export function IntegrationGroup({
               alt={`${integrationName} logo`}
               width={24}
               height={24}
-              className="rounded"
+              className="rounded-lg"
             />
           ) : (
-            <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs font-semibold">
+            <div className="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-semibold">
               {integrationName[0]}
             </div>
           )}
@@ -156,7 +156,7 @@ export function IntegrationGroup({
             </Button>
           )}
           {isTruncated && (
-            <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md">
+            <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-1.5 rounded-xl">
               <Icons.alertCircle className="h-4 w-4" />
               <span className="text-sm">Results may be truncated</span>
             </div>
@@ -169,11 +169,11 @@ export function IntegrationGroup({
           {isLoading ? (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 bg-gray-200 rounded-md animate-pulse" />
+                <div key={i} className="h-16 bg-gray-200 rounded-xl animate-pulse" />
               ))}
             </div>
           ) : error ? (
-            <div className="p-4 text-red-500 bg-red-50 rounded-md">
+            <div className="p-4 text-red-500 bg-red-50 rounded-xl">
               <p className="text-sm">Failed to load documents. Please try again.</p>
             </div>
           ) : (
@@ -207,7 +207,7 @@ export function IntegrationGroup({
               </div>
 
               {isTruncated && (
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
                   <p className="text-sm text-blue-800">
                     Some documents may not be displayed. The integration returned more
                     documents than can be shown at once.

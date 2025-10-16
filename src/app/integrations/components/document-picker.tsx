@@ -154,10 +154,10 @@ export function DocumentPicker({
                 height={32}
                 src={integration.logoUri}
                 alt={`${integration.name} logo`}
-                className="w-8 h-8 rounded-lg"
+                className="w-8 h-8 rounded-xl"
               />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center">
                 {integration.name[0]}
               </div>
             )}
@@ -190,7 +190,7 @@ export function DocumentPicker({
           <div className="space-y-4">
             {/* Show breadcrumbs only when not at root and not searching */}
             {breadcrumbs.length > 0 && !searchQuery.trim() && (
-              <div className="flex items-center flex-wrap gap-2 px-4 py-2 text-sm text-gray-500 bg-gray-50 rounded-md">
+              <div className="flex items-center flex-wrap gap-2 px-4 py-2 text-sm text-gray-500 bg-gray-50 rounded-xl">
                 <button
                   onClick={() => navigateToBreadcrumb(-1)}
                   className="hover:text-gray-900 transition-colors"
@@ -224,10 +224,10 @@ export function DocumentPicker({
                       height={64}
                       src={integration.logoUri}
                       alt={`${integration.name} logo`}
-                      className="w-16 h-16 rounded-xl mb-6 opacity-90"
+                      className="w-16 h-16 rounded-2xl mb-6 opacity-90"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-semibold mb-6 opacity-90">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-semibold mb-6 opacity-90">
                       {integration.name[0]}
                     </div>
                   )}
@@ -267,7 +267,7 @@ export function DocumentPicker({
                     {folders.map((folder) => (
                       <div
                         key={folder.id}
-                        className="flex items-center gap-3 py-2 px-4 hover:bg-gray-50 cursor-pointer rounded-md"
+                        className="flex items-center gap-3 py-2 px-4 hover:bg-gray-50 cursor-pointer rounded-xl"
                         onClick={() =>
                           navigateToFolder(folder.id, folder.title)
                         }
@@ -306,7 +306,7 @@ export function DocumentPicker({
                     {files.map((file) => (
                       <div
                         key={file.id}
-                        className="flex items-center gap-3 py-2 px-4 hover:bg-gray-50 cursor-pointer rounded-md"
+                        className="flex items-center gap-3 py-2 px-4 hover:bg-gray-50 cursor-pointer rounded-xl"
                         onClick={() => onSelectDocument(file)}
                       >
                         <Checkbox

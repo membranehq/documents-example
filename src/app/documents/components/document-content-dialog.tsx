@@ -65,7 +65,7 @@ export function DocumentContentDialog({
               <Loader2Icon className="h-8 w-8 animate-spin" />
             </div>
           ) : error ? (
-            <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
+            <div className="p-4 text-red-500 bg-red-50 rounded-xl">{error}</div>
           ) : !content.trim() ? (
             <div className="flex items-center justify-center text-gray-500 text-center py-8">
               No content available for this document

@@ -57,7 +57,7 @@ export function DocumentItem({
   return (
     <>
       <div
-        className={`flex gap-3 p-3 hover:bg-gray-50 rounded-md transition-colors ${isFolder ? "cursor-pointer" : ""
+        className={`flex gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors ${isFolder ? "cursor-pointer" : ""
           }`}
         onClick={() => {
           if (isFolder) {

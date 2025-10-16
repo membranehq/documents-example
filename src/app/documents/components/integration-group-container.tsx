@@ -72,7 +72,7 @@ export function IntegrationGroupContainer({
   // Show error state if documents failed to load
   if (documentsError) {
     return (
-      <div className="border rounded-lg p-6">
+      <div className="border rounded-2xl p-6">
         <div className="flex items-center gap-4 mb-6">
           {integrationLogo && (
             <Image
@@ -80,7 +80,7 @@ export function IntegrationGroupContainer({
               alt={integrationName}
               width={48}
               height={48}
-              className="rounded"
+              className="rounded-xl"
             />
           )}
           <div className="flex-1">
