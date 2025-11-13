@@ -17,6 +17,19 @@ export const metadata: Metadata = {
     default: "Content Import Example",
     template: "%s | Content Import Example",
   },
+  icons: {
+    icon: [
+      {
+        url: '/icon.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icon-dark.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+    ],
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({
